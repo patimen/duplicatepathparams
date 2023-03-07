@@ -1,0 +1,7 @@
+micronaut:
+  application:
+    name: duplicatepathparams
+netty:
+  default:
+    allocator:
+      max-order: 3
