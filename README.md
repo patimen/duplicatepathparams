@@ -1,16 +1,52 @@
-## Micronaut 3.8.6 Documentation
+# Micronaut OpenAPI generation Bug
+If:
+1. A path parameter is caught using a `RequestBean`
+2. The `RequestBean` variable is not named the same as the parameter
+3. The containing Controller inherits from ANY class
 
-- [User Guide](https://docs.micronaut.io/3.8.6/guide/index.html)
-- [API Reference](https://docs.micronaut.io/3.8.6/api/index.html)
-- [Configuration Reference](https://docs.micronaut.io/3.8.6/guide/configurationreference.html)
-- [Micronaut Guides](https://guides.micronaut.io/index.html)
+THEN:
+The path parameter shows up TWICE in the openapi:
 
----
+This project outputs the following swagger file:
+```openapi
+openapi: 3.0.1
+paths:
+  /inherits/{path}/simple:
+    get:
+      operationId: getPath
+      parameters:
+      - name: path
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: path
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: getPath 200 response
+          content:
+            application/json:
+              schema:
+                type: string
+  /{path}/simple:
+    get:
+      operationId: getPath_1
+      parameters:
+      - name: path
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: getPath_1 200 response
+          content:
+            application/json:
+              schema:
+                type: string
 
-- [Shadow Gradle Plugin](https://plugins.gradle.org/plugin/com.github.johnrengelman.shadow)
-
-## Feature http-client documentation
-
-- [Micronaut HTTP Client documentation](https://docs.micronaut.io/latest/guide/index.html#httpClient)
-
-
+```
